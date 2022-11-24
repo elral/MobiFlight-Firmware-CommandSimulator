@@ -140,7 +140,7 @@ int main(int arg, char *argv[])
 void usage_help(const char *prgname)
 {
     printf("\n\n    Invalid parameters!\n");
-    printf("        Usage: %s <serialport> <baud> <txt file>\n", prgname);
+    printf("        Usage: %s <serialport> <baud> <device> <txt file>\n", prgname);
     printf("        Example 1:\n");
     printf("            Reading test.txt and sending to COM3 with 115200 baud to ProMicro\n");
     printf("            %s 3 115200 1 test.txt\n", prgname);
