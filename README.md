@@ -24,8 +24,8 @@ The format of the textfile is like the existing commands for each output device.
 Additionally a delay for each command must be defined and terminated with ":".
 The next command will be send after this delay.
 So the format must be:
-   3,        0,   500;   2000:
-   3,        0,   200;   2000:
+'   3,        0,   500;   2000:
+   3,        0,   200;   2000:'
 
    3 = Stepper
    0 = 0th Stepper
