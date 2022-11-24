@@ -15,6 +15,9 @@ The <baud> must be 115200 for all Mobiflight boards.
 If the COM port is available, the commands will be printed to the COM port and theterminal.
 Otherwise only to the terminal.
 
+As an example for ProMicro:
+* simulateUI.exe 3 115200 1 MF_Test.prn
+
 ## Format of the textfile
 
 The format of the textfile is like the existing commands for each output device.
