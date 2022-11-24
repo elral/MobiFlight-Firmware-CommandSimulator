@@ -2,7 +2,7 @@
 
 This little program sends a text file to a COM port.
 The COM port, baud rate, device and file name must be defined on the command line.
-The intend is to simulate commands from the MobiFlight Connector to an attached board for easier testing.
+The intend is to simulate commands from the MobiFlight Connector to an attached board without starting the flight simulator.
 
 
 ## Starting the simulator
