@@ -1,7 +1,7 @@
 # Sending a txt file to a COM port
 
 This little program sends a text file to a COM port.
-The COM port, baud rate, device and file name must be defined on the command line.
+The program must be started from the commandline (or setup a batch file), COM port, baud rate, device and file name must following be parameters.
 The intend is to simulate commands from the MobiFlight Connector to an attached board without starting the flight simulator.
 
 
