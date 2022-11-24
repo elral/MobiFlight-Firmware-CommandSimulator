@@ -5,12 +5,15 @@ The COM port, baud rate, device and file name must be defined on the command lin
 The intend is to simulate commands from the MobiFlight Connector to an attached board without starting the flight simulator.
 
 
-## Starting the simulator
+## Starting the command simulator
 
-Usage: program.exe <serialport> <device> <baud> <txt file>
-The <device> could be 0 for a Mega or Uno, or it could be 1 for the ProMicro.
-The <serialport> must be defined without COM.
-The <baud> must be 115200 for all Mobiflight boards.
+Usage: simulate.exe "serialport" "device" "baud" "txt file"
+
+The "device" could be 0 for a Mega or Uno, or it could be 1 for the ProMicro.
+
+The "serialport" must be defined without COM.
+
+The "baud" must be 115200 for all Mobiflight boards.
 
 If the COM port is available, the commands will be printed to the COM port and theterminal.
 Otherwise only to the terminal.
