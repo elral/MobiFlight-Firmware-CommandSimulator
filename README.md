@@ -40,3 +40,6 @@ But always the delay time has to added.
 The text file can be easily set up with Excel (see demo excel file).
 After setting up the file export it as .prn file.
 Just be careful that the columns are not too small. In this case some characters will not be exported.
+
+Another simple way is to mark all cells and then copy and paste them into a textfile (e.g. setup with the Windows Editor).
+The format should be also like above, the spaces will be filtered out.
