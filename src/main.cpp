@@ -10,107 +10,85 @@ extern "C" {
 #include <errno.h>
 #include "RS232.h"
 
+#define MAX_FILE_SIZE 0xFFFF
 
-#define SBEGIN  0x01
-#define SDATA   0x02
-#define SRSP    0x03
-#define SEND    0x04
-#define ERRO    0x05
-#define CHIP_ID 0x11
-#define SDUMP   0x12
-#define FBLOCK  0x13
-#define MAX_FILE_SIZE   0xFFFF
+void usage_help(const char *prgname);
 
-
-
-
-/*
-* argv[0]----.exe file name
-* argv[1]----serial port
-* argv[2]----baud rate
-* argv[3]----device, 
-* argv[4]----filename
-*/
-
-void usage_help(const char *prgname)
-{
-    printf("\n\n    Invalid parameters!\n");
-    printf("        Usage: %s <serialport> <baud> <txt file>\n", prgname);
-    printf("        Example 1:\n");
-    printf("            Reading test.txt and sending to COM3 with 115200 baud to ProMicro\n");
-    printf("            %s 3 115200 1 test.txt\n", prgname);
-    printf("        Example 2:\n");
-    printf("            Reading test.txt and sending to COM3 with 115200 baud to Mega/Uno\n");
-    printf("            %s 3 115200 0 test.txt\n\n\n", prgname);
-    exit(1);
-}
+/* Command line parameter
+ *
+ * argv[0]----.exe file name
+ * argv[1]----serial port
+ * argv[2]----baud rate
+ * argv[3]----device,
+ * argv[4]----filename
+ *
+ */
 
 int main(int arg, char *argv[])
 {
-    FILE *pfile = NULL;
-    int com = atoi(argv[1]) - 1;
-    int baud = atoi(argv[2]);
-    int device = atoi(argv[3]);
+    int         com      = atoi(argv[1]) - 1;
+    int         baud     = atoi(argv[2]);
+    int         device   = atoi(argv[3]);
     const char *filename = argv[4];
-    unsigned char cmd_buf[5] = { 0,0,0,0,0 };
+
+    FILE         *pfile      = NULL;
+    unsigned char cmd_buf[5] = {0, 0, 0, 0, 0};
     unsigned char buf[MAX_FILE_SIZE];
-    int end = 0;
-    long fsize = 0;
+    int           end   = 0;
+    long          fsize = 0;
 
     if (arg <= 4) usage_help(argv[0]);
 
-    int read_size = 0;
+    int read_size   = 0;
     int start_block = 0;
     if (strlen(filename) < 1) {
-        printf("Invalid filename: %s\n",filename);
-        return 1;
+        printf("Invalid filename: %s\n", filename);
+        exit(1);
     }
-    pfile = fopen(filename, "rb");              // Read mode
-    if(NULL == pfile) {
-        printf("Cannot open file: %s (%d)\n",filename,errno);
-        return 1;
+    pfile = fopen(filename, "rb"); // Read mode
+    if (NULL == pfile) {
+        printf("Cannot open file: %s (%d)\n", filename, errno);
+        exit(1);
     }
-    
+
     // calculate the size of the file
-    fseek(pfile,0,SEEK_SET);
-    fseek(pfile,0,SEEK_END);
+    fseek(pfile, 0, SEEK_SET);
+    fseek(pfile, 0, SEEK_END);
     fsize = ftell(pfile);
-    fseek(pfile,0,SEEK_SET);
-    if (fsize < 1 ) {
+    fseek(pfile, 0, SEEK_SET);
+    if (fsize < 1) {
         printf("Cannot send empty file!\n");
-        return 1;
+        exit(1);
     }
     if (fsize > MAX_FILE_SIZE) {
         printf("File too big to copy into internal buffer!\n");
-        return 1;
+        exit(1);
     }
     fread(buf, fsize, 1, pfile);
     fclose(pfile);
-    printf("We have copied the file into the buffer with length of %5d Byte\n", fsize);
-
-    // now we have the file in the buffer
+    printf("We have copied the file into the buffer with length of %d Bytes\n", fsize);
 
     // open COM port for sending the commands to MF board
-    if(1 == RS232_OpenComport(com, baud)) {
-        //printf("Error open ComPort!\n");
+    if (1 == RS232_OpenComport(com, baud)) {
+        // printf("Error open ComPort!\n");
         printf("Just printing to terminal!\n");
     } else {
-        printf("Serial port: COM%d\n",com+1);
-        if(device == 0) {
+        printf("Serial port: COM%d\n", com + 1);
+        if (device == 0) {
             printf("Device  : Default (e.g. UNO)\n");
             printf("Baud:%d data:8 parity:none stopbit:1 DTR:off RTS:off\n", baud);
             RS232_disableDTR(com);
-        }  else {
+        } else {
             printf("Device: ProMicro\n");
             printf("Baud:%d data:8 parity:none stopbit:1 DTR:on RTS:off\n", baud);
             RS232_enableDTR(com);
         }
         RS232_disableRTS(com);
-        Sleep(1000);   //wait to boot up the Firmware
+        Sleep(1000); // wait to boot up the Firmware
     }
-    
-    unsigned long adress = 0;
-    unsigned char charDelayTime[100] = {0};
+
+    unsigned long adress             = 0;
+    char          charDelayTime[100] = {0};
 
     printf("\nStarting to send the commands!\n\n");
 
@@ -144,7 +122,7 @@ int main(int arg, char *argv[])
             // convert string into long
             unsigned long delayTime = atoi(charDelayTime);
             // and do not send it to the COM port, just the terminal
-            printf("   -> Delay: %dms\n",delayTime);
+            printf("   -> Delay: %dms\n", delayTime);
             Sleep(delayTime);
             // skip CR and LF
             if (buf[adress] == 13) adress++;
@@ -156,7 +134,20 @@ int main(int arg, char *argv[])
 
     RS232_CloseComport(com);
 
-    return 0;
+    exit(1);
+}
+
+void usage_help(const char *prgname)
+{
+    printf("\n\n    Invalid parameters!\n");
+    printf("        Usage: %s <serialport> <baud> <txt file>\n", prgname);
+    printf("        Example 1:\n");
+    printf("            Reading test.txt and sending to COM3 with 115200 baud to ProMicro\n");
+    printf("            %s 3 115200 1 test.txt\n", prgname);
+    printf("        Example 2:\n");
+    printf("            Reading test.txt and sending to COM3 with 115200 baud to Mega/Uno\n");
+    printf("            %s 3 115200 0 test.txt\n\n\n", prgname);
+    exit(1);
 }
 
 #ifdef __cplusplus

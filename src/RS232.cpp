@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
@@ -219,3 +223,8 @@ void RS232_cputs(int comport_number, const char *text)  /* sends a string to ser
 {
   while(*text != 0)   RS232_SendByte(comport_number, *(text++));
 }
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
